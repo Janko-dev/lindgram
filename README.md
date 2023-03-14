@@ -1,2 +1,2 @@
-# genkov
-Generate images based on markov-based pattern matching 
+# Vizgram
+Visualize formal grammars with L-systems
