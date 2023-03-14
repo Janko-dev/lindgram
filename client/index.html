@@ -4,25 +4,63 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP test</title>
+    <title>L System Playground</title>
     <style>
-        .textarea_standard {
+        .body {
+            padding: 0;
+            margin: 0;
+            background: #222222;
+        }
+        .parent {
+            display: flex;
+            flex-direction: row;
+        }
+        .child1 {
+            width: 30%;
+            height: 100vh;
+            padding-left: 20%;
+        }
+        .child2 {
+            width: 50%;
+            height: 100vh;
+        }
+        .input_field {
             font-size: medium;
+            font-family: monospace;
             background-color: rgb(51, 51, 51);
             color: antiquewhite;
+            min-height: 2em;
+            width: 16em;
+            padding: 1%;
+        }
+        .input_field.area_field {
             min-height: 8em;
             width: 16em;
         }
-
     </style>
 </head>
-<body style="background: #222222;">
-    <!-- <textarea class="textarea_standard" id="input" wrap="hard"></textarea>   -->
-    <div contenteditable class="textarea_standard" id="input">
-        hello <span style="color: blueviolet;">wor</span>ld
+<body class="body">
+    <div class="parent">
+        <div class="child1">
+            <h3 style="color: antiquewhite;">Starting axiom:</h3>
+            <div contenteditable class="input_field" id="axiom_input">
+                A
+            </div>
+            
+            <h3 style="color: antiquewhite;">Input rules:</h3>
+            <div contenteditable class="input_field area_field" id="rules_input">
+                A => AB <br/>
+                B => AA
+            </div>
+            <br/>
+            <button id="generate_btn">Generate</button>
+        </div>
+        <div class="child2">
+            <canvas id="canvas" width="500" height="500" ></canvas>
+        </div>
     </div>
-    <br/>
-    <canvas id="canvas" width="500" height="500"></canvas>
+
     <script src="index.js"></script>
+
 </body>
 </html>

@@ -1,43 +1,47 @@
-use tiny_http::{Server, Response, Method, Header, Request};
-use std::{fs::File, error::Error};
+mod server;
+mod lexer;
+mod lsystem;
 
-fn send_response(request: Request, path: &str, content_type: &str) -> Result<(), Box<dyn Error>> {
-    let header = Header::from_bytes("Content-Type", content_type)
-        .expect("expected correct header");
-    let f = File::open(path)?;
-    let mut response = Response::from_file(f);
-    response.add_header(header);
-    request.respond(response)?;
-    Ok(())
-}
+use lsystem::{Model};
+// use minifb::{Key, Window, WindowOptions};
 
-fn handle_request(request: Request) -> Result<(), Box<dyn Error>> {
-    
-    match (request.method(), request.url()) {
-        (Method::Get, "/") => {
-            send_response(request, "client/index.html", "text/html; charset=utf-8")?;
-        },
-        (Method::Get, "/index.js") => {
-            send_response(request, "client/index.js", "text/javascript; charset=utf-8")?;        
-        },
-        (Method::Post, "/generate") => {
-            
-        },
-        _ => {}
-    }
-    Ok(())
-}
+// const WIDTH: usize = 400;
+// const HEIGHT: usize = 400;
 
 fn main(){
-    let server = Server::http("0.0.0.0:8000").unwrap();
+    // let rules = "A => BBA\n B => AB";
+    // let mut model = Model::new("A");
+    // model.interpret(rules);
+    // model.generate(2);
+    
+    // println!("{:?}", model.rules);
+    // println!("{:?}", model.error_stack);
+    // println!("{:?}", model.axiom);
 
-    for request in server.incoming_requests() {
-        println!("INFO: {:?}, url: {:?}",
-            request.method(),
-            request.url(),
-        );
-        handle_request(request).map_err(|e| {
-            eprintln!("{e}");
-        }).unwrap();
-    }
+    server::start_server();
+
+
+    // let mut window = Window::new(
+    //     "Test - ESC to exit",
+    //     WIDTH,
+    //     HEIGHT,
+    //     WindowOptions::default(),
+    // )
+    // .unwrap_or_else(|e| {
+    //     panic!("{}", e);
+    // });
+
+    // // Limit to max ~60 fps update rate
+    // window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+
+    // while window.is_open() && !window.is_key_down(Key::Escape) {
+    //     for i in model.img_data.iter_mut() {
+    //         *i = 0; // write something more funny here!
+    //     }
+
+    //     // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
+    //     window
+    //         .update_with_buffer(&model.img_data, WIDTH, HEIGHT)
+    //         .unwrap();
+    // }
 }
