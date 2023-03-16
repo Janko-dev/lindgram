@@ -18,18 +18,24 @@
         .child1 {
             width: 30%;
             height: 100vh;
-            padding-left: 20%;
+            padding-left: 5%;
         }
         .child2 {
+            width: 30%;
+            height: 100vh;
+        }
+        .child3 {
             width: 50%;
             height: 100vh;
+            /* padding-top: 5%; */
+            padding-right: 15%;
         }
         .input_field {
             font-size: medium;
             font-family: monospace;
             background-color: rgb(51, 51, 51);
             color: antiquewhite;
-            min-height: 2em;
+            min-height: 1.5em;
             width: 16em;
             padding: 1%;
         }
@@ -37,26 +43,70 @@
             min-height: 8em;
             width: 16em;
         }
+        .list {
+            background-color: rgb(51, 51, 51);
+            padding-left: 0%;
+            width: 90%;
+        }
+        .list_item {
+            font-size: medium;
+            font-family: monospace;
+            color: antiquewhite;
+            /* width: 22em; */
+            min-height: 3em;
+        }
+        .btn {
+            font-size: large;
+            font-family: monospace;
+            background-color: rgb(51, 51, 51);
+            color: antiquewhite;
+            width: 13.5em;
+            height: 2em;
+        }
     </style>
 </head>
 <body class="body">
     <div class="parent">
         <div class="child1">
+            <h3 style="color: antiquewhite;">Syntax:</h3>
+            <ul class="list">
+                <li class="list_item">F: move forward by line length and draw line</li>
+                <li class="list_item">f: move forward by line length without drawing a line</li>
+                <li class="list_item">+: turn left by angle</li>
+                <li class="list_item">-: turn right by angle</li>
+                <li class="list_item">[: push current position and rotation onto the stack</li>
+                <li class="list_item">]: pop current position and rotation off the stack</li>
+                <li class="list_item">Non-terminals can be any character in production rules</li>
+            </ul>
+        </div>
+        <div class="child2">
             <h3 style="color: antiquewhite;">Starting axiom:</h3>
             <div contenteditable class="input_field" id="axiom_input">
-                A
+                F+F+F+F
             </div>
             
             <h3 style="color: antiquewhite;">Input rules:</h3>
             <div contenteditable class="input_field area_field" id="rules_input">
-                A => AB <br/>
-                B => AA
+                F => F+FF++F+F
+            </div>
+            <h3 style="color: antiquewhite;">Iterations: </h3>
+            <input id="n" type="range" value="3" min="1" max="10"/>
+            <h3 style="color: antiquewhite;">Angle: </h3>
+            <div contenteditable class="input_field" id="angle">
+                90
+            </div>
+            <h3 style="color: antiquewhite;">Line length: </h3>
+            <div contenteditable class="input_field" id="line">
+                10
             </div>
             <br/>
-            <button id="generate_btn">Generate</button>
+            <button id="generate_btn" class="btn">Generate</button>
         </div>
-        <div class="child2">
+        <div class="child3">
+            <h3 style="color: antiquewhite;">Canvas</h3>
             <canvas id="canvas" width="500" height="500" ></canvas>
+            <br/>
+            <p id="offset" style="color: antiquewhite;"></p>
         </div>
     </div>
 

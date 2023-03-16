@@ -1,5 +1,5 @@
 use tiny_http::{Server, Response, Method, Header, Request};
-use std::{fs::File, error::Error};
+use std::{fs::File, error::Error, f64::consts::PI};
 use serde_json::{Value};
 
 use crate::lsystem::Model;
@@ -14,27 +14,50 @@ fn send_response(request: Request, path: &str, content_type: &str) -> Result<(),
     Ok(())
 }
 
-fn get_axiom_rules_n(content: String) -> Result<(String, String, i32), Box<dyn Error>> {
+fn get_string(val: &mut Value, name: &str) -> String {
+    if let Value::String(s) = val[name].take(){
+        return s;
+    } else {
+        return String::new();
+    }
+}
+
+fn get_number(val: &mut Value, name: &str) -> i32 {
+    if let Value::Number(s) = val[name].take(){
+        return s.as_i64().unwrap() as i32;
+    } else {
+        return 1;
+    };
+}
+
+#[derive(Default, Debug)]
+struct Params {
+    axiom: String,
+    rules: String,
+    n: i32,
+    width: usize,
+    height: usize,
+    line_len: i32,
+    angle: f64,
+    xoffset: i32,
+    yoffset: i32
+}
+
+fn get_variables(content: String) -> Result<Params, Box<dyn Error>> {
     let mut val: Value = serde_json::from_str(&content)?;
-    let axiom = if let Value::String(s) = val["axiom"].take(){
-        s
-    } else {
-        String::new()
-    };
 
-    let rules = if let Value::String(s) = val["rules"].take(){
-        s
-    } else {
-        String::new()
-    };
+    let mut params: Params = Default::default();
 
-    let n = if let Value::Number(s) = val["n"].take(){
-        s.as_i64().unwrap() as i32
-    } else {
-        1
-    };
-
-    Ok((axiom, rules, n))
+    params.axiom = get_string(&mut val, "axiom");
+    params.rules = get_string(&mut val, "rules");
+    params.n = get_number(&mut val, "n");
+    params.width = get_number(&mut val, "width") as usize;
+    params.height = get_number(&mut val, "height") as usize;
+    params.line_len = get_number(&mut val, "line_len");
+    params.angle = get_number(&mut val, "angle") as f64 / 360. * 2. * PI;
+    params.xoffset = get_number(&mut val, "offsetX");
+    params.yoffset = get_number(&mut val, "offsetY");
+    Ok(params)
 }
 
 fn handle_request(request: Request) -> Result<(), Box<dyn Error>> {
@@ -50,21 +73,15 @@ fn handle_request(request: Request) -> Result<(), Box<dyn Error>> {
             let mut content = String::new();
             let mut request = request;
             request.as_reader().read_to_string(&mut content).unwrap();
-            let (axiom, rules, n) = get_axiom_rules_n(content)?;
+            let params = get_variables(content)?;
+            // println!("{:?}", params);
 
-            let mut model = Model::new(&axiom);
-            model.interpret(&rules);
-            model.generate(n);
+            let mut model = Model::new(&params.axiom);
+            model.interpret(&params.rules);
+            model.generate(params.n);
+            let pixels = model.render(params.width, params.height, params.xoffset, params.yoffset, params.line_len, params.angle);
 
-            println!("{:?}", model.rules);
-            println!("{:?}", model.error_stack);
-            println!("{:?}", model.axiom);
-            let data = vec![51 as u8; 500*500*4];
-
-            let header = Header::from_bytes("Content-Type", "application/octet-stream")
-                .expect("expected correct header");
-            let mut response = Response::from_data(data);
-            response.add_header(header);
+            let response = Response::from_data(pixels);
             request.respond(response)?;
         },
         _ => {}
@@ -73,8 +90,9 @@ fn handle_request(request: Request) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn start_server() {
-    let server = Server::http("0.0.0.0:8000").unwrap();
-
+    let server_addr = "0.0.0.0:8000";
+    let server = Server::http(server_addr).unwrap();
+    println!("INFO: Server started at {server_addr}");
     for request in server.incoming_requests() {
         println!("INFO: {:?}, url: {:?}",
             request.method(),
