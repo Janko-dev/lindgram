@@ -10,11 +10,11 @@ const offset = document.getElementById("offset");
 const canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 
-const WIDTH  = 500;
-const HEIGHT = 500;
+const WIDTH  = 800;
+const HEIGHT = 600;
 
-ctx.width = WIDTH;
-ctx.height = HEIGHT;
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
 
 ctx.fillStyle = "white"
 ctx.fillRect(0, 0, WIDTH, HEIGHT);
