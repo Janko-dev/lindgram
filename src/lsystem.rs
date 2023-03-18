@@ -1,4 +1,4 @@
-use std::{collections::HashMap, f32::consts::PI};
+use std::{collections::HashMap, f64::consts::PI};
 
 use super::lexer::*;
 
@@ -81,7 +81,6 @@ impl Model {
 
     pub fn render(&mut self, width: usize, height: usize, xoff: i32, yoff: i32, line_len: i32, angle: f64) -> Vec<u8> {
         
-        println!("{}, {}", xoff, yoff);
         let mut renderer = Renderer::new(xoff, yoff, width, height);
 
         for ax in self.axiom.chars() {
@@ -131,7 +130,7 @@ impl Renderer {
             pixels: vec![255; width*height*4], 
             xoff, 
             yoff,
-            angle: 0.,
+            angle: -PI / 2.,
             width, 
             height,
             stack: vec![]

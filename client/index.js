@@ -32,8 +32,6 @@ canvas.addEventListener("mousedown", (e) => {
 })
 
 btn.addEventListener("click", (e) => {
-    // console.log(axiom.innerText);
-    // console.log();
     fetch("/generate", {
         method: "POST",
         headers: {
@@ -50,38 +48,11 @@ btn.addEventListener("click", (e) => {
             "offsetX": offsetX,
             "offsetY": offsetY
         }),
-    }).then(res => {
-        return res.arrayBuffer();
-    }).then(res => {
+    })
+    .then(res => res.arrayBuffer())
+    .then(res => {
         let pixels = new Uint8ClampedArray(res.slice(0, WIDTH*HEIGHT*4))
         const imageData = new ImageData(pixels, WIDTH, HEIGHT);
-        // console.log(imageData.data.filter((v) => v == 0))
         ctx.putImageData(imageData, 0, 0);
     })
 })
-
-// query.addEventListener("keypress", (e) => {
-    
-//     if (e.key == "Enter"){
-//         // post req
-//         console.log("hello");
-//     }
-    
-//     if (e.key == "R" || e.key == "r"){
-//         let cursorPos=document.selection.createRange().duplicate();
-//         let clickx = cursorPos.getBoundingClientRect().left; 
-//         let clicky = cursorPos.getBoundingClientRect().top;
-//         // console.log(query.innerHTML.slice(0, query.innerHTML.length-1));
-//         // query.innerHTML = query.innerHTML.slice(0, query.innerHTML.length-1);
-//         query.innerHTML.length--;
-//         query.innerHTML += '<span style="color: red;">'+e.key+'</span>';
-        
-//         cursorPos = document.body.createTextRange();
-//         cursorPos.moveToPoint(clickx, clicky);
-//         cursorPos.select();
-
-//         console.log(query.innerHTML);
-//     } else if (e.key == "G" || e.key == "g"){
-        
-//     } 
-// })
